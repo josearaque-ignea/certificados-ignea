@@ -22,6 +22,7 @@
       align-items: center;
       padding: 40px;
       text-align: center;
+      position: relative;
     }
 
     .left h1 {
@@ -42,6 +43,7 @@
       align-items: center;
       background-color: #fff;
       padding: 40px;
+      text-align: center;
     }
 
     .right h2 {
@@ -119,8 +121,10 @@
   <div class="right">
     <h2>Verifica tu certificado</h2>
     <p>Ingresa el ID único de tu certificado para verificar su autenticidad.</p>
-    <input type="text" id="codigo" placeholder="Ejemplo: IG-2025-001" />
+
+    <input type="text" id="codigo" placeholder="Ejemplo: IGNEA001" />
     <button onclick="verificar()">Verificar</button>
+
     <div class="result" id="resultado"></div>
   </div>
 
@@ -138,17 +142,21 @@
 
       try {
         const response = await fetch(
-          `https://script.google.com/macros/s/AKfycbyiUL2WehyhcbhScUbTFRVt0pxEr5lG3KipmnYhxgQa9cJ8JRlm6T0jkPhM8z6GfhphKg/exec?codigo=${codigo}`
+          `https://script.google.com/macros/s/AKfycbyiUL2WehyhcbhScUbTFRVt0pxEr5lG3KipmnYhxgQa9cJ8JRlm6T0jkPhM8z6GfhphKg/exec?code=${codigo}`
         );
+
         const data = await response.json();
 
-        if (data && data.url) {
+        if (data.ok && data.data) {
           resultado.innerHTML = `
-            <h3>${data.mensaje}</h3>
+            <h3>${data.data.mensaje}</h3>
+            <p><strong>${data.data.nombre}</strong></p>
+
             <div class="preview">
-              <iframe src="${data.url}"></iframe>
+              <iframe src="${data.data.url}"></iframe>
             </div>
-            <a href="${data.url}" target="_blank">
+
+            <a href="${data.data.url}" target="_blank">
               <button>Descargar certificado</button>
             </a>
           `;
@@ -162,5 +170,6 @@
   </script>
 </body>
 </html>
+
 
 
